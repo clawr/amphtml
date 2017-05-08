@@ -14,44 +14,41 @@
  * limitations under the License.
  */
 
+import {user} from '../../../src/log';
 import {FilterType} from './filters/filter';
 import {assertClickDelaySpec} from './filters/click-delay';
 import {assertClickLocationSpec} from './filters/click-location';
 
 /**
  * @typedef {{
- *   targets: !Object<string, NavigationTarget>,
- *   filters: (!Object<string, Filter>|undefined)
+ *   targets: !Object<string, !NavigationTarget>,
+ *   filters: (!Object<string, !FilterConfig>|undefined)
  * }}
  */
 let AmpAdExitConfig;
 
 /**
  * @typedef {{
- *   final_url: Url,
- *   tracking_urls: (!Array<Url>|undefined),
+ *   final_url: string,
+ *   tracking_urls: (!Array<string>|undefined),
  *   vars: (Variables|undefined),
  *   filters: (!Array<string>|undefined>
  * }}
  */
 let NavigationTarget;
 
-/** @typedef {string} */
-let Url;
-
-/** @typedef {string|number|boolean} */
-let VariableValue;
-
-/** @typedef {!Object<string, (VariableValue|!Array<VariableValue>)>} */
+/**
+ * @typedef {!Object<string, {defaultValue: (string|number|boolean)}>}
+ */
 let Variables;
 
 /**
  * @typedef {{
  *   type: !FilterType,
- *   delay: (number|undefined)
+ *   delay: number
  * }}
  */
-let FastClickFilter;
+let ClickDelayConfig;
 
 /**
  * @typedef {{
@@ -60,30 +57,12 @@ let FastClickFilter;
  *   right: (number|undefined),
  *   bottom: (number|undefined),
  *   left: (number|undefined),
- *   selector: (string|undefined)
  * }}
  */
-let ClickLocationFilter;
+let ClickLocationConfig;
 
-/** @typedef {FastClickFilter|ClickLocationFilter} */
-let Filter;
-
-export class ValidationError extends Error {
-  constructor(msg) {
-    super(msg);
-    this.msg_ = msg;
-  }
-
-  toString() {
-    return `[AmpAdExitConfig Validation Error] "${this.msg_}"`;
-  }
-}
-
-function assert(msg, condition) {
-  if (!condition) {
-    throw new ValidationError(msg);
-  }
-}
+/** @typedef {!ClickLocationConfig|!ClickDelayConfig} */
+let FilterConfig;
 
 /**
  * Checks whether the object conforms to the AmpAdExitConfig spec.
@@ -103,33 +82,40 @@ export function assertConfig(config) {
 
 function assertFilters(filters) {
   for (const name in filters) {
-    assert(`Filter specification '${name}' is malformed`,
-           typeof filters[name] == 'object');
+    user().assert(typeof filters[name] == 'object',
+                  `Filter specification '%s' is malformed`, name);
     const type = filters[name].type;
     switch (type) {
       case FilterType.CLICK_DELAY:
+        user().assert(
+            assertClickDelaySpec(filters[name]),
+            `invalid ClickDelayConfig: '%s'`, name);
+        break;
       case FilterType.CLICK_LOCATION:
-
+        user().assert(
+            assertClickLocationSpec(filters[name]),
+            `invalid ClickLocationConfig: '%s'`, name);
+        break;
       default:
-      assert(`'${type}' is not a known filter type`);
+        user().assert(false, `'${type}' is not a known filter type`);
     }
   }
 }
 
 function assertTargets(targets, config) {
-  assert(`'targets' must be an object`, typeof targets == 'object');
+  user().assert(typeof targets == 'object', `'targets' must be an object`);
   for (const target in targets) {
     assertTarget(target, targets[target], config);
   }
 }
 
 function assertTarget(name, target, config) {
-  assert(
-      `final_url of ${name} must be a string`,
-      typeof target.final_url == 'string');
+  user().assert(
+      typeof target.final_url == 'string',
+      `final_url of target '%s' must be a string`, name);
   if (target.filters) {
     for (const filter of target.filters) {
-      assert(`filter '${filter}' not defined`, config.filters[filter]);
+      user().assert(config.filters[filter], `filter '%s' not defined`, filter);
     }
   }
 }

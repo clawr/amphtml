@@ -15,6 +15,7 @@
  */
 
 import {AmpAdExit} from '../amp-ad-exit';
+import * as sinon from 'sinon';
 
 describes.realWin('amp-ad-exit', {
   amp: {
@@ -22,17 +23,58 @@ describes.realWin('amp-ad-exit', {
   }
 }, env => {
 
+  const ID = 'exit-api';
+
+  const BASIC_CONFIG = {
+    targets: {
+      simple: {
+        final_url: 'https://example.com/simple'
+      }
+    }
+  };
+
+  const START_TIME = 1;
+
   let win;
   let element;
+  let clock;
 
-  beforeEach(() => {
+  function makeElementWithConfig(config) {
     win = env.win;
     element = win.document.createElement('amp-ad-exit');
+    element.id = ID;
+    const json = win.document.createElement('script');
+    json.textContent = JSON.stringify(config);
+    json.setAttribute('type', 'application/json');
+    element.appendChild(json);
     win.document.body.appendChild(element);
+  }
+
+  function makeClickEvent(time = 0, x = 0, y = 0, touch = false) {
+    clock.tick(time);
+    return {
+      clientX: x,
+      clientY: y
+    }
+  }
+
+  beforeEach(() => {
+    clock = sinon.useFakeTimers();
   });
 
-  it('should have hello world when built', () => {
+  afterEach(() => {
+    if (element) {
+      env.win.document.body.removeChild(element);
+      element = undefined;
+    }
+    clock.restore();
+  });
+
+  it('should attempt new-tab navigation', () => {
+    makeElementWithConfig(BASIC_CONFIG);
     element.build();
+    element.exit({args: {target: 'simple'}, event: makeClickEvent(1001)});
+    // expect window open
     expect(element.querySelector('div').textContent).to.equal('hello world');
   });
 });

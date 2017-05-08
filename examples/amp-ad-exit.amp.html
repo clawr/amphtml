@@ -7,8 +7,26 @@
   <meta name="viewport" content="width=device-width,minimum-scale=1,initial-scale=1">
   <style amp-boilerplate>body{-webkit-animation:-amp-start 8s steps(1,end) 0s 1 normal both;-moz-animation:-amp-start 8s steps(1,end) 0s 1 normal both;-ms-animation:-amp-start 8s steps(1,end) 0s 1 normal both;animation:-amp-start 8s steps(1,end) 0s 1 normal both}@-webkit-keyframes -amp-start{from{visibility:hidden}to{visibility:visible}}@-moz-keyframes -amp-start{from{visibility:hidden}to{visibility:visible}}@-ms-keyframes -amp-start{from{visibility:hidden}to{visibility:visible}}@-o-keyframes -amp-start{from{visibility:hidden}to{visibility:visible}}@keyframes -amp-start{from{visibility:hidden}to{visibility:visible}}</style><noscript><style amp-boilerplate>body{-webkit-animation:none;-moz-animation:none;-ms-animation:none;animation:none}</style></noscript>
   <style amp-custom>
-    amp-ad-exit {
-      color: red;
+    #wrapper {
+    background: #db4437;
+    padding: 10px;
+    }
+
+    #ad {
+
+    border: 1px solid black;
+  width: 300px;
+  height: 250px;
+    color: #4285f4;
+    background: #fff;
+}
+    .product {
+    width: 100px;
+    height: 100px;
+    margin: 10px;
+    padding: 10px;
+    background: #0f9d58;
+    float: left;
     }
     </style>
   <script async custom-element="amp-ad-exit" src="https://cdn.ampproject.org/v0/amp-ad-exit-0.1.js"></script>
@@ -20,18 +38,18 @@
 {
   "targets": {
     "e1": {
-      "final_url": "https://example.com/product1",
+      "final_url": "http://localhost:8000/?product1&x=CLICK_X&y=CLICK_Y&e=_elem&shouldNotBeReplaced=AMP_VERSION&a_f=_f",
       "vars": {
-        "elem": {
-          "default": "headline"
-        }
-      }
+        "_elem": {"defaultValue": "headline"},
+        "_f": {"defaultValue": "foo"},
+        "ignored": {"defaultValue": true},
+        "AMP_VERSION": {"defaultValue": "9999"}
+      },
+      "filters": ["border_protection"]
     },
     "e2": {
-      "final_url": "https://example.com/product2",
+      "final_url": "http://localhost:8000/?product2&r=RANDOM",
       "tracking_urls": [
-        "https://adclickserver.com/click?id=af319adec901&x=CLICK_X&y=CLICK_Y",
-        "https://tracker.adnetwork.com/?url=example.com"
       ],
       "filters": ["fast_click", "border_protection"]
     }
@@ -39,22 +57,27 @@
   "filters": {
     "fast_click": {
       "type": "click_delay",
-      "delay": 1000
+      "delay": 2000
     },
     "border_protection": {
       "type": "click_location",
       "top": 10,
-      "right": 5,
+      "right": 10,
       "bottom": 10,
-      "left": 10,
-      "selector": "#product1"
+      "left": 10
     }
   }
 }
 </script>
 </amp-ad-exit>
-
-  <h1></h1>
-  <p><a href="#" on="tap:exit-api.exit(target='e2')">example.com</a></p>
+<div id="wrapper" on="tap:exit-api.exit(target='e1')"><div id="ad">
+  <h1>amp-ad-exit example</h1>
+  <div class="product">
+    <a href="https://www.google.com" on="tap:exit-api.exit(target='e1', _elem='Product 1')">product 1</a>
+  </div>
+  <div class="product">
+    <a href="https://www.google.com" on="tap:exit-api.exit(target='e2', _elem='Product 2')">product 2</a>
+  </div>
+</div></div>
 </body>
 </html>

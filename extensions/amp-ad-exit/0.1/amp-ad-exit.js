@@ -29,8 +29,6 @@ export class AmpAdExit extends AMP.BaseElement {
   constructor(element) {
     super(element);
 
-    this.win_ = window;
-
     /** @private {!./config.AmpAdExitConfig} */
     this.config_ = {targets: {}, filters: {}};
 
@@ -39,17 +37,20 @@ export class AmpAdExit extends AMP.BaseElement {
     };
 
     this.clickDelayFilter_ = new ClickDelayFilter();
-    this.clickLocationFilter_ = new ClickLocationFilter();
+    this.clickLocationFilter_ = new ClickLocationFilter(this.getAmpDoc());
 
     this.registerAction('exit', this.exit.bind(this));
   }
 
+  /**
+   * @param {!../../../src/service/action-impl.ActionInvocation} invocation
+   */
   exit({args, event}) {
     event.preventDefault();
-    const targetName = args.target || 'default';
+    const targetName = args.target;
     const target = this.config_.targets[targetName];
     if (!target) {
-      user().error(TAG, `Exit target not found: ${targetName}`);
+      user().error(TAG, `Exit target not found: '${targetName}'`);
       return;
     }
     if (!this.filter_(
@@ -59,23 +60,49 @@ export class AmpAdExit extends AMP.BaseElement {
       user().info(TAG, 'Click deemed unintenful');
       return;
     }
-    const replacements = urlReplacementsForDoc(this.element);
-    const processUrl = url => replacements.expandUrlSync(url);
-    // TODO(clawr): Custom variable replacement.
+    const substituteVariables = this.getUrlVariableRewriter_(args, target);
     if (target.tracking_urls) {
-      target.tracking_urls.map(processUrl)
+      target.tracking_urls.map(substituteVariables)
           .forEach(url => this.pingTrackingUrl_(url));
     }
-    openWindowDialog(this.win_, processUrl(target.final_url), '_blank');
+    openWindowDialog(this.win, substituteVariables(target.final_url), '_blank');
+  }
+
+
+  /**
+   * @return {function(string): string}
+   */
+  getUrlVariableRewriter_(args, target) {
+    const vars = {
+      'CLICK_X': () => event.clientX,
+      'CLICK_Y': () => event.clientY,
+    };
+    const whitelist = {
+      'RANDOM': true,
+      'CLICK_X': true,
+      'CLICK_Y': true
+    };
+    if (target.vars) {
+      for (const customVar in target.vars) {
+        if (customVar.startsWith('_')) {
+          vars[customVar] = () =>
+              args[customVar] || target.vars[customVar].defaultValue;
+          whitelist[customVar] = true;
+        }
+      }
+    }
+    const replacements = urlReplacementsForDoc(this.getAmpDoc());
+    return url => replacements.expandUrlSync(
+        url, vars, undefined /* opt_collectVars */, whitelist);
   }
 
   pingTrackingUrl_(url) {
-    user().fine(TAG, `pinging ${url}`)
-    if (this.win_.navigator.sendBeacon) {
-      this.win_.navigator.sendBeacon(url, '');
+    user().fine(TAG, `pinging ${url}`);
+    if (this.win.navigator.sendBeacon &&
+        this.win.navigator.sendBeacon(url, '')) {
       return;
     }
-    const req = this.win_.document.createElement('img');
+    const req = this.win.document.createElement('img');
     req.src = url;
   }
 
@@ -121,6 +148,8 @@ export class AmpAdExit extends AMP.BaseElement {
 
   /** @override */
   buildCallback() {
+    this.element.setAttribute('aria-hidden', 'true');
+
     try {
       const children = this.element.children;
       if (children.length != 1) {

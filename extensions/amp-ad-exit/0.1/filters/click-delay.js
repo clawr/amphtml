@@ -37,5 +37,6 @@ export function makeClickDelaySpec(delayMs) {
 }
 
 export function assertClickDelaySpec(spec) {
-  return spec.type == FilterType.CLICK_DELAY && typeof spec.delay == 'number';
+  return spec.type == FilterType.CLICK_DELAY && typeof spec.delay == 'number' &&
+      spec.delay > 0;
 }
