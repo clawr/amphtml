@@ -118,4 +118,12 @@ function assertTarget(name, target, config) {
       user().assert(config.filters[filter], `filter '%s' not defined`, filter);
     }
   }
+  if (target.vars) {
+    const pattern = /^_[a-zA-Z0-9_-]+$/;
+    for (const variable in target.vars) {
+      user().assert(
+          pattern.test(variable), `'%s' must match the pattern '%s'`, variable,
+          pattern);
+    }
+  }
 }

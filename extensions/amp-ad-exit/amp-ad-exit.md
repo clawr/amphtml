@@ -45,7 +45,7 @@ values to insert. The exit action will perform these steps:
 1. parse the JSON config (if it hasn't yet been parsed)
 2. find the requested exit target
 3. determine whether the exit should be allowed by processing the click event through declared filters
-4. rewrite URL variables (see [Variable Substitution](#variable-substitution)
+4. rewrite URL variables (see [Variable Substitution](#variable-substitution))
 5. ping any click tracking URLs
 6. perform the navigation by opening the target URL in a new tab
 
@@ -226,7 +226,6 @@ amp-ad-exit exposes an `exit` action that other elements will reference in `on="
 | `_[a-zA-Z0-9_-]+` | `string\|boolean\|number` | Replace the URL parameter with this name and value into the final and tracking URLs. |
 
 ## Configuration spec
-
 
 
 ## Attributes

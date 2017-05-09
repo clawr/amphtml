@@ -15,9 +15,9 @@
  */
 
 import {assertConfig} from './config';
-import {dev, user} from '../../../src/log';
+import {user} from '../../../src/log';
 import {urlReplacementsForDoc} from '../../../src/services';
-import {isJsonScriptTag, openWindowDialog} from  '../../../src/dom';
+import {isJsonScriptTag, openWindowDialog} from '../../../src/dom';
 import {FilterType} from './filters/filter';
 import {ClickDelayFilter, makeClickDelaySpec} from './filters/click-delay';
 import {ClickLocationFilter} from './filters/click-location';
@@ -37,7 +37,7 @@ export class AmpAdExit extends AMP.BaseElement {
     };
 
     this.clickDelayFilter_ = new ClickDelayFilter();
-    this.clickLocationFilter_ = new ClickLocationFilter(this.getAmpDoc());
+    this.clickLocationFilter_ = new ClickLocationFilter(this.win, this.getAmpDoc());
 
     this.registerAction('exit', this.exit.bind(this));
   }
@@ -60,7 +60,8 @@ export class AmpAdExit extends AMP.BaseElement {
       user().info(TAG, 'Click deemed unintenful');
       return;
     }
-    const substituteVariables = this.getUrlVariableRewriter_(args, target);
+    const substituteVariables =
+        this.getUrlVariableRewriter_(args, event, target);
     if (target.tracking_urls) {
       target.tracking_urls.map(substituteVariables)
           .forEach(url => this.pingTrackingUrl_(url));
@@ -72,7 +73,7 @@ export class AmpAdExit extends AMP.BaseElement {
   /**
    * @return {function(string): string}
    */
-  getUrlVariableRewriter_(args, target) {
+  getUrlVariableRewriter_(args, event, target) {
     const vars = {
       'CLICK_X': () => event.clientX,
       'CLICK_Y': () => event.clientY,
@@ -129,7 +130,7 @@ export class AmpAdExit extends AMP.BaseElement {
         return true;
       }
       const result = filter.filter(spec, event);
-      user().fine(TAG, `Filter '${name}': ${result ? 'pass' : 'fail'}`);
+      user().info(TAG, `Filter '${name}': ${result ? 'pass' : 'fail'}`);
       return result;
     });
   }

@@ -55,7 +55,7 @@ describes.realWin('amp-ad-exit', {
     return {
       clientX: x,
       clientY: y
-    }
+    };
   }
 
   beforeEach(() => {

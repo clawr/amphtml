@@ -15,41 +15,51 @@
  */
 
 import {viewportForDoc} from '../../../../src/services';
+import {rectIntersection} from '../../../../src/layout-rect';
 import {Filter, FilterType} from './filter';
 
 /** @implements {Filter} */
 export class ClickLocationFilter {
-  constructor(ampdoc) {
+  constructor(win, ampdoc) {
+    this.win_ = win;
     this.ampdoc_ = ampdoc;
   }
 
   filter(spec, event) {
-    const bounds = this.getBounds_(spec);
-    const {clientX, clientY} = this.getClickPosition_(event);
+    const clickableArea = this.getClickableArea_();
+    const bounds = this.getBounds_(spec, clickableArea);
+    const {clientX, clientY} = this.getClickPosition_(event, clickableArea);
     return clientY >= bounds.top &&
         clientX < bounds.right &&
         clientY < bounds.bottom &&
         clientX >= bounds.left;
   }
 
-  getBounds_(spec) {
-    const viewportSize = viewportForDoc(this.ampdoc_).getSize();
+  getClickableArea_() {
+    const vp = viewportForDoc(this.ampdoc_);
+    const bd = this.win_.document.body;
+    return rectIntersection(vp.getRect(), vp.getLayoutRect(bd));
+  }
+
+  getBounds_(spec, clickableArea) {
     return {
-      top: spec.top || 0,
-      right: viewportSize.width - (spec.right || 0),
-      bottom: viewportSize.height - (spec.bottom || 0),
-      left: spec.left || 0,
-    }
+      top: clickableArea.top + (spec.top || 0),
+      right: clickableArea.right - (spec.right || 0),
+      bottom: clickableArea.bottom - (spec.bottom || 0),
+      left: clickableArea.left + (spec.left || 0),
+    };
   }
 
   /** @return {{clientX: number, clientY: number}} */
-  getClickPosition_(event) {
+  getClickPosition_(event, clickableArea) {
     let clientX, clientY;
     if (event.changedTouches && event.changedTouches.length > 0) {
       ({clientX, clientY} = event.changedTouches[0]);
     } else {
       ({clientX, clientY} = event);
     }
+    clientX += clickableArea.left;
+    clientY += clickableArea.top;
     return {clientX, clientY};
   }
 }
