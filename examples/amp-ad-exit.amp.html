@@ -1,0 +1,81 @@
+<!doctype html>
+<html ⚡>
+<head>
+  <meta charset="utf-8">
+  <title>amp-ad-exit example</title>
+  <link rel="canonical" href="amps.html">
+  <meta name="viewport" content="width=device-width,minimum-scale=1,initial-scale=1">
+  <style amp-boilerplate>body{-webkit-animation:-amp-start 8s steps(1,end) 0s 1 normal both;-moz-animation:-amp-start 8s steps(1,end) 0s 1 normal both;-ms-animation:-amp-start 8s steps(1,end) 0s 1 normal both;animation:-amp-start 8s steps(1,end) 0s 1 normal both}@-webkit-keyframes -amp-start{from{visibility:hidden}to{visibility:visible}}@-moz-keyframes -amp-start{from{visibility:hidden}to{visibility:visible}}@-ms-keyframes -amp-start{from{visibility:hidden}to{visibility:visible}}@-o-keyframes -amp-start{from{visibility:hidden}to{visibility:visible}}@keyframes -amp-start{from{visibility:hidden}to{visibility:visible}}</style><noscript><style amp-boilerplate>body{-webkit-animation:none;-moz-animation:none;-ms-animation:none;animation:none}</style></noscript>
+  <style amp-custom>
+    #wrapper {
+    background: #db4437;
+    padding: 10px;
+    }
+
+    #ad {
+
+    border: 1px solid black;
+  width: 280px;
+  height: 230px;
+    color: #4285f4;
+    background: #fff;
+}
+    .product {
+    width: 100px;
+    height: 100px;
+    margin: 10px;
+    padding: 10px;
+    background: #0f9d58;
+    float: left;
+    }
+    </style>
+  <script async custom-element="amp-ad-exit" src="https://cdn.ampproject.org/v0/amp-ad-exit-0.1.js"></script>
+  <script async src="https://cdn.ampproject.org/v0.js"></script>
+</head>
+<body>
+<amp-ad-exit id="exit-api">
+<script type="application/json">
+{
+  "targets": {
+    "e1": {
+      "final_url": "http://localhost:8000/?product1&x=CLICK_X&y=CLICK_Y&e=_elem&shouldNotBeReplaced=AMP_VERSION&a_f=_f",
+      "vars": {
+        "_elem": {"defaultValue": "headline"},
+        "_f": {"defaultValue": "foo"}
+      },
+      "filters": ["border_protection"]
+    },
+    "e2": {
+      "final_url": "http://localhost:8000/?product2&r=RANDOM",
+      "tracking_urls": [
+      ],
+      "filters": ["fast_click", "border_protection"]
+    }
+  },
+  "filters": {
+    "fast_click": {
+      "type": "click_delay",
+      "delay": 2000
+    },
+    "border_protection": {
+      "type": "click_location",
+      "top": 10,
+      "right": 10,
+      "bottom": 10,
+      "left": 10
+    }
+  }
+}
+</script>
+</amp-ad-exit>
+<div id="wrapper" on="tap:exit-api.exit(target='e1')"><div id="ad">
+  <h1>amp-ad-exit example</h1>
+  <div class="product">
+    <a href="https://www.google.com" on="tap:exit-api.exit(target='e1', _elem='Product 1')">product 1</a>
+  </div>
+  <div class="product">
+    <a href="https://www.google.com" on="tap:exit-api.exit(target='e2', _elem='Product 2')">product 2</a>
+  </div>
+</div></div>
+</body>
+</html>
