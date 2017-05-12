@@ -114,9 +114,9 @@ function assertTarget(name, target, config) {
       typeof target.final_url == 'string',
       `final_url of target '%s' must be a string`, name);
   if (target.filters) {
-    for (const filter of target.filters) {
+    target.filters.forEach(filter => {
       user().assert(config.filters[filter], `filter '%s' not defined`, filter);
-    }
+    });
   }
   if (target.vars) {
     const pattern = /^_[a-zA-Z0-9_-]+$/;

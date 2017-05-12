@@ -37,7 +37,8 @@ export class AmpAdExit extends AMP.BaseElement {
     };
 
     this.clickDelayFilter_ = new ClickDelayFilter();
-    this.clickLocationFilter_ = new ClickLocationFilter(this.win, this.getAmpDoc());
+    this.clickLocationFilter_ =
+        new ClickLocationFilter(this.win, this.getAmpDoc());
 
     this.registerAction('exit', this.exit.bind(this));
   }
@@ -81,7 +82,7 @@ export class AmpAdExit extends AMP.BaseElement {
     const whitelist = {
       'RANDOM': true,
       'CLICK_X': true,
-      'CLICK_Y': true
+      'CLICK_Y': true,
     };
     if (target.vars) {
       for (const customVar in target.vars) {

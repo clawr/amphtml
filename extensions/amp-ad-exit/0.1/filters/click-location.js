@@ -16,9 +16,9 @@
 
 import {viewportForDoc} from '../../../../src/services';
 import {rectIntersection} from '../../../../src/layout-rect';
-import {Filter, FilterType} from './filter';
+import {FilterType} from './filter';
 
-/** @implements {Filter} */
+/** @implements {!./filter.Filter} */
 export class ClickLocationFilter {
   constructor(win, ampdoc) {
     this.win_ = win;
@@ -69,7 +69,7 @@ export class ClickLocationFilter {
  * @return {boolean} Whether spec is a valid ClickLocationConfig.
  */
 export function assertClickLocationSpec(spec) {
-  const isUndefOrNotNegative = (n) => {
+  const isUndefOrNotNegative = n => {
     const type = typeof n;
     return type == 'undefined' || (type == 'number' && n >= 0);
   };

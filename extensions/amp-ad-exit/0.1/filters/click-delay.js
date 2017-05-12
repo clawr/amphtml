@@ -14,9 +14,9 @@
  * limitations under the License.
  */
 
-import {Filter, FilterType} from './filter';
+import {FilterType} from './filter';
 
-/** @implements {Filter} */
+/** @implements {!./filter.Filter} */
 export class ClickDelayFilter {
   constructor() {
     this.resetClock();

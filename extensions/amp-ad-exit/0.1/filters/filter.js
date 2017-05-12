@@ -17,7 +17,7 @@
 /** @enum {string} */
 const FilterType = {
   CLICK_DELAY: 'click_delay',
-  CLICK_LOCATION: 'click_location'
+  CLICK_LOCATION: 'click_location',
 };
 
 class Filter {
