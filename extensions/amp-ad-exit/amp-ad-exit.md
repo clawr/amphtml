@@ -35,7 +35,7 @@ limitations under the License.
   </tr>
 </table>
 
-## Overview
+## <a name="overview"></a> Overview
 
 The amp-ad-exit element is configured with a JSON child script element and will
 expose an "exit" action to other elements in the creative. Elements can be
@@ -49,7 +49,7 @@ values to insert. The exit action will perform these steps:
 5. ping any click tracking URLs
 6. perform the navigation by opening the target URL in a new tab
 
-## Example
+## <a name="example"></a> Example
 
 ```html
 <amp-ad-exit id="exit-api">
@@ -108,7 +108,7 @@ values to insert. The exit action will perform these steps:
 </div>
 ```
 
-## Filters
+## <a name="filters"></a> Filters
 Filters are specified in the `filters` section of the config. Targets reference
 filters by their property name in the `filters` section.
 
@@ -164,7 +164,7 @@ Example:
 }
 ```
 
-## Click tracking URLs
+## <a name="click-tracking-urls"></a> Click tracking URLs
 Navigation targets can be associated with click tracking URLs in the config.
 Before navigation, amp-ad-exit will attempt to ping the tracking URLs by using
 
@@ -173,7 +173,7 @@ Before navigation, amp-ad-exit will attempt to ping the tracking URLs by using
 
 TODO(clawr): Allow a "transport" option like amp-analytics?
 
-## Variable Substitution
+## <a name="variable-substitution"></a> Variable Substitution
 
 URL variable substitution works like standard [AMP variable substitution](https://github.com/ampproject/amphtml/blob/master/spec/amp-var-substitutions.md) with
 custom variables and a limited set of platform variables. Variable substitution
@@ -216,7 +216,7 @@ string replacement. *Any* occurence of the variable in the URL will be
 replaced. For example, if you define a custom variable named "_b" with value
 "foo", `/?a_b_c=_b` will become `/?afoo_c=foo`.
 
-## `exit` action
+## <a name="exit-action"></a> `exit` action
 
 amp-ad-exit exposes an `exit` action that other elements will reference in `on="tap:..."` attributes. The action accepts a "target" string parameter that must match a named `NavigationTarget` in the `ExitConfig`. Custom variables beggining with an underscore can also be passed in.
 
@@ -225,7 +225,7 @@ amp-ad-exit exposes an `exit` action that other elements will reference in `on="
 | `target`            | `string`                  | The name of a  `NavigationTarget` in the `ExitConfig` |
 | `_[a-zA-Z0-9_-]+` | `string\|boolean\|number` | Replace the URL parameter with this name and value into the final and tracking URLs. |
 
-## Configuration spec
+## <a name="config"></a> Configuration spec
 
 
 ## Attributes
