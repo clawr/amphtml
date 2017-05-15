@@ -20,7 +20,6 @@ import {urlReplacementsForDoc} from '../../../src/services';
 import {isJsonScriptTag, openWindowDialog} from '../../../src/dom';
 import {FilterType} from './filters/filter';
 import {ClickDelayFilter, makeClickDelaySpec} from './filters/click-delay';
-import {ClickLocationFilter} from './filters/click-location';
 
 const TAG = 'amp-ad-exit';
 
@@ -37,8 +36,6 @@ export class AmpAdExit extends AMP.BaseElement {
     };
 
     this.clickDelayFilter_ = new ClickDelayFilter();
-    this.clickLocationFilter_ =
-        new ClickLocationFilter(this.win, this.getAmpDoc());
 
     this.registerAction('exit', this.exit.bind(this));
   }
@@ -142,7 +139,7 @@ export class AmpAdExit extends AMP.BaseElement {
       case FilterType.CLICK_DELAY:
         return this.clickDelayFilter_;
       case FilterType.CLICK_LOCATION:
-        return this.clickLocationFilter_;
+        // TODO(clawr): implement this.
       default:
         return null;
     }
@@ -155,22 +152,20 @@ export class AmpAdExit extends AMP.BaseElement {
     try {
       const children = this.element.children;
       if (children.length != 1) {
-        user().error(
-            TAG, 'The tag should contain exactly one <script> child.');
-        return;
+        throw new Error('The tag should contain exactly one <script> child.');
       }
       const child = children[0];
       if (isJsonScriptTag(child)) {
         this.config_ = assertConfig(JSON.parse(child.textContent));
       } else {
-        user().error(
-            TAG,
+        throw new Error(
             'The amp-ad-exit config should ' +
-                'be put in a <script> tag with type="application/json"');
+            'be put in a <script> tag with type="application/json"');
       }
     }
     catch (e) {
       user().error(TAG, 'Invalid JSON config', e);
+      throw e;
     }
   }
 
