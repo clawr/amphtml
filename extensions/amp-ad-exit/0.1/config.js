@@ -22,7 +22,8 @@ import {assertClickLocationSpec} from './filters/click-location';
 /**
  * @typedef {{
  *   targets: !Object<string, !NavigationTarget>,
- *   filters: (!Object<string, !FilterConfig>|undefined)
+ *   filters: (!Object<string, !FilterConfig>|undefined),
+ *   transport: (!Object<TransportMode, boolean>|undefined)
  * }}
  */
 export let AmpAdExitConfig;
@@ -64,6 +65,12 @@ export let ClickLocationConfig;
 /** @typedef {!ClickLocationConfig|!ClickDelayConfig} */
 export let FilterConfig;
 
+/** @enum {string} */
+export const TransportMode = {
+  BEACON: 'beacon',
+  IMAGE: 'image',
+};
+
 /**
  * Checks whether the object conforms to the AmpAdExitConfig spec.
  *
@@ -76,8 +83,21 @@ export function assertConfig(config) {
   } else {
     config.filters = {};
   }
+  if (config.transport) {
+    assertTransport(config.transport);
+  } else {
+    config.transport = {};
+  }
   assertTargets(config.targets, config);
   return /** @type {!AmpAdExitConfig} */ (config);
+}
+
+function assertTransport(transport) {
+  for (const t in transport) {
+    user().assert(t == TransportMode.BEACON || t == TransportMode.IMAGE,
+                  `Unknown transport option: '${t}'`);
+    user().assert(typeof transport[t] == 'boolean');
+  }
 }
 
 function assertFilters(filters) {

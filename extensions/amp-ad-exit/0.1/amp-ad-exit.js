@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import {assertConfig} from './config';
+import {assertConfig, TransportMode} from './config';
 import {user} from '../../../src/log';
 import {urlReplacementsForDoc} from '../../../src/services';
 import {isJsonScriptTag, openWindowDialog} from '../../../src/dom';
@@ -97,7 +97,10 @@ export class AmpAdExit extends AMP.BaseElement {
 
   pingTrackingUrl_(url) {
     user().fine(TAG, `pinging ${url}`);
-    if (this.win.navigator.sendBeacon &&
+    const useBeacon = this.config_.transport[TransportMode.BEACON] == true ||
+        !this.config_.transport.hasOwnProperty(TransportMode.BEACON);
+    if (useBeacon &&
+        this.win.navigator.sendBeacon &&
         this.win.navigator.sendBeacon(url, '')) {
       return;
     }
