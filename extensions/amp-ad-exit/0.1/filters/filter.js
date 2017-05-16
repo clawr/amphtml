@@ -26,7 +26,7 @@ class Filter {
    * @param {!Event} event
    * @return {boolean} Whether the exit is allowed.
    */
-  filter(spec, event) {}
+  filter(spec, event) { throw new Error('unimplemented'); }
 }
 
 export {Filter, FilterType};

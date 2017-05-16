@@ -14,34 +14,34 @@
  * limitations under the License.
  */
 
-import {AmpAdExit} from '../amp-ad-exit';
+import '../amp-ad-exit';
 import * as sinon from 'sinon';
 
 const EXIT_CONFIG = {
   targets: {
-    simple: {final_url: 'http://localhost:8000/simple'},
+    simple: {'final_url': 'http://localhost:8000/simple'},
     twoSecondDelay: {
-      final_url: 'http://localhost:8000/simple',
-      filters: ['two_second'],
-    },
+       'final_url': 'http://localhost:8000/simple',
+ 'filters': ['two_second'],
+      },
     tracking: {
-      final_url: 'http://localhost:8000/tracking-test',
-      tracking_urls: [
+      'final_url': 'http://localhost:8000/tracking-test',
+      'tracking_urls': [
         'http://localhost:8000/tracking?1',
         'http://localhost:8000/tracking?2',
         'http://localhost:8000/tracking?3',
-      ]
+      ],
     },
     variables: {
-      final_url:
+      'final_url':
           'http://localhost:8000/vars?foo=bar&ampdoc=AMPDOC_HOST&r=RANDOM&x=CLICK_X&y=CLICK_Y',
-      tracking_urls: [
+      'tracking_urls': [
         'http://localhost:8000/tracking?r=RANDOM&x=CLICK_X&y=CLICK_Y',
-      ]
+      ],
     },
-    custom_vars: {
-      final_url: 'http://localhost:8000/vars?foo=_FOO',
-      tracking_urls: [
+    customVars: {
+      'final_url': 'http://localhost:8000/vars?foo=_FOO',
+      'tracking_urls': [
         'http://localhost:8000/tracking?bar=_BAR',
       ],
       vars: {
@@ -50,12 +50,12 @@ const EXIT_CONFIG = {
         },
         _BAR: {
           defaultValue: 'bar-default',
-        }
-      }
+        },
+      },
     },
   },
   filters: {
-    two_second: {
+    'two_second': {
       type: 'click_delay',
       delay: 2000,
     },
@@ -66,18 +66,18 @@ describes.realWin('amp-ad-exit', {
   amp: {
     ampdoc: 'single',
     extensions: ['amp-ad-exit'],
-  }
+  },
 }, env => {
   let sandbox;
   let win;
   let element;
 
-  function makeClickEvent(time = 0, x = 0, y = 0, touch = false) {
+  function makeClickEvent(time = 0, x = 0, y = 0) {
     sandbox.clock.tick(time);
     return {
       preventDefault: sinon.spy(),
       clientX: x,
-      clientY: y
+	      clientY: y,
     };
   }
 
@@ -112,7 +112,7 @@ describes.realWin('amp-ad-exit', {
     element.implementation_.executeAction({
       method: 'exit',
       args: {target: 'not-a-real-target'},
-      event: makeClickEvent(1001)
+	      event: makeClickEvent(1001),
     });
     expect(open).to.not.have.been.called;
   });
@@ -133,14 +133,14 @@ describes.realWin('amp-ad-exit', {
     element.implementation_.executeAction({
       method: 'exit',
       args: {target: 'simple'},
-      event: makeClickEvent(999)
+	      event: makeClickEvent(999),
     });
 
     element.viewportCallback(true);  // Reset click delay clock.
     element.implementation_.executeAction({
       method: 'exit',
       args: {target: 'twoSecondDelay'},
-      event: makeClickEvent(1999)
+	      event: makeClickEvent(1999),
     });
 
     expect(open).to.not.have.been.called;
@@ -154,7 +154,7 @@ describes.realWin('amp-ad-exit', {
     element.implementation_.executeAction({
       method: 'exit',
       args: {target: 'simple'},
-      event: makeClickEvent(1001)
+	      event: makeClickEvent(1001),
     });
 
     expect(open).to.have.been.calledOnce;
@@ -168,7 +168,7 @@ describes.realWin('amp-ad-exit', {
     element.implementation_.executeAction({
       method: 'exit',
       args: {target: 'simple'},
-      event: makeClickEvent(1001)
+	      event: makeClickEvent(1001),
     });
 
     expect(open).to.have.been.calledTwice;
@@ -190,7 +190,7 @@ describes.realWin('amp-ad-exit', {
     element.implementation_.executeAction({
       method: 'exit',
       args: {target: 'tracking'},
-      event: makeClickEvent(1001)
+	      event: makeClickEvent(1001),
     });
 
     expect(open).to.have.been.calledOnce;
@@ -217,7 +217,7 @@ describes.realWin('amp-ad-exit', {
     element.implementation_.executeAction({
       method: 'exit',
       args: {target: 'tracking'},
-      event: makeClickEvent(1001)
+	      event: makeClickEvent(1001),
     });
 
     expect(open).to.have.been.calledOnce;
@@ -242,11 +242,11 @@ describes.realWin('amp-ad-exit', {
     element.implementation_.executeAction({
       method: 'exit',
       args: {target: 'variables'},
-      event: makeClickEvent(1001, 101, 102)
+	      event: makeClickEvent(1001, 101, 102),
     });
 
-    const urlMatcher = sinon.match(
-        /http:\/\/localhost:8000\/vars\?foo=bar&ampdoc=AMPDOC_HOST&r=[0-9\.]+&x=101&y=102/);
+    const urlMatcher = sinon.match(new RegExp(
+          'http:\\/\\/localhost:8000\\/vars\?' + 'foo=bar&ampdoc=AMPDOC_HOST&r=[0-9\\.]+&x=101&y=102'));
     expect(open).to.have.been.calledWith(urlMatcher, '_blank');
 
     const trackingMatcher = sinon.match(
@@ -266,8 +266,8 @@ describes.realWin('amp-ad-exit', {
 
     element.implementation_.executeAction({
       method: 'exit',
-      args: {target: 'custom_vars', _FOO: 'foo', _BAR: 'bar'},
-      event: makeClickEvent(1001, 101, 102)
+      args: {target: 'customVars', _FOO: 'foo', _BAR: 'bar'},
+	      event: makeClickEvent(1001, 101, 102),
     });
 
     expect(open).to.have.been.calledWith(

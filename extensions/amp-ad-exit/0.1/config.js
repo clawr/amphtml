@@ -25,7 +25,7 @@ import {assertClickLocationSpec} from './filters/click-location';
  *   filters: (!Object<string, !FilterConfig>|undefined)
  * }}
  */
-let AmpAdExitConfig;
+export let AmpAdExitConfig;
 
 /**
  * @typedef {{
@@ -35,12 +35,12 @@ let AmpAdExitConfig;
  *   filters: (!Array<string>|undefined>
  * }}
  */
-let NavigationTarget;
+export let NavigationTarget;
 
 /**
  * @typedef {!Object<string, {defaultValue: (string|number|boolean)}>}
  */
-let Variables;
+export let Variables;
 
 /**
  * @typedef {{
@@ -48,7 +48,7 @@ let Variables;
  *   delay: number
  * }}
  */
-let ClickDelayConfig;
+export let ClickDelayConfig;
 
 /**
  * @typedef {{
@@ -59,10 +59,10 @@ let ClickDelayConfig;
  *   left: (number|undefined),
  * }}
  */
-let ClickLocationConfig;
+export let ClickLocationConfig;
 
 /** @typedef {!ClickLocationConfig|!ClickDelayConfig} */
-let FilterConfig;
+export let FilterConfig;
 
 /**
  * Checks whether the object conforms to the AmpAdExitConfig spec.
@@ -77,7 +77,7 @@ export function assertConfig(config) {
     config.filters = {};
   }
   assertTargets(config.targets, config);
-  return /** @type {!./config.AmpAdExitConfig} */ (config);
+  return /** @type {!AmpAdExitConfig} */ (config);
 }
 
 function assertFilters(filters) {

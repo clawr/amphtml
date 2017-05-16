@@ -22,7 +22,7 @@ export class ClickDelayFilter {
     this.resetClock();
   }
 
-  filter(spec, event) {
+  filter(spec) {
     return (Date.now() - this.inViewportTime_) >= spec.delay;
   }
 
