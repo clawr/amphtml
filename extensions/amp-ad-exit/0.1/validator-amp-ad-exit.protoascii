@@ -52,14 +52,27 @@ tags: {  # amp-ad-exit
   }
   spec_url: "https://www.ampproject.org/docs/reference/components/amp-ad-exit"
 }
+tags: {  # amp-ad-exit config JSON
+  html_format: AMP
+  tag_name: "SCRIPT"
+  spec_name: "amp-ad-exit configuration JSON"
+  mandatory_parent: "AMP-AD-EXIT"
+  attrs: {
+    name: "type"
+    value: "application/json"
+    mandatory: true
+  }
+  requires: "amp-ad-exit extension .js script"
+  spec_url: "https://www.ampproject.org/docs/reference/components/amp-ad-exit"
+}
 tags: {  # <amp-ad-exit>
   html_format: AMP
   tag_name: "AMP-AD-EXIT"
   satisfies: "amp-ad-exit"
   requires: "amp-ad-exit extension .js script"
-  attr_lists: "extended-amp-global"
-  spec_url: "https://www.ampproject.org/docs/reference/components/amp-hello-world"
-  amp_layout: {
-    supported_layouts: RESPONSIVE
+  attrs: {
+    name: "id"
+    mandatory: true
   }
+  spec_url: "https://www.ampproject.org/docs/reference/components/amp-ad-exit"
 }

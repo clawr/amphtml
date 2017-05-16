@@ -171,7 +171,17 @@ Before navigation, amp-ad-exit will attempt to ping the tracking URLs by using
 1. navigator.sendBeacon, if available
 2. image request
 
-TODO(clawr): Allow a "transport" option like amp-analytics?
+You can override this behavior with a "transport" object on the config:
+
+``` javascript
+{
+  "targets": { ... },
+  "filters": { ... },
+  "transport": {
+    "beacon": false,
+  }
+}
+```
 
 ## <a name="variable-substitution"></a> Variable Substitution
 
@@ -226,7 +236,7 @@ amp-ad-exit exposes an `exit` action that other elements will reference in `on="
 | `_[a-zA-Z0-9_-]+` | `string\|boolean\|number` | Replace the URL parameter with this name and value into the final and tracking URLs. |
 
 ## <a name="config"></a> Configuration spec
-
+See the `AmpAdExitConfig` typedef in config.js.
 
 ## Attributes
 
