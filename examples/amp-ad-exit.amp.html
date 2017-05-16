@@ -7,27 +7,32 @@
   <meta name="viewport" content="width=device-width,minimum-scale=1,initial-scale=1">
   <style amp-boilerplate>body{-webkit-animation:-amp-start 8s steps(1,end) 0s 1 normal both;-moz-animation:-amp-start 8s steps(1,end) 0s 1 normal both;-ms-animation:-amp-start 8s steps(1,end) 0s 1 normal both;animation:-amp-start 8s steps(1,end) 0s 1 normal both}@-webkit-keyframes -amp-start{from{visibility:hidden}to{visibility:visible}}@-moz-keyframes -amp-start{from{visibility:hidden}to{visibility:visible}}@-ms-keyframes -amp-start{from{visibility:hidden}to{visibility:visible}}@-o-keyframes -amp-start{from{visibility:hidden}to{visibility:visible}}@keyframes -amp-start{from{visibility:hidden}to{visibility:visible}}</style><noscript><style amp-boilerplate>body{-webkit-animation:none;-moz-animation:none;-ms-animation:none;animation:none}</style></noscript>
   <style amp-custom>
-    #wrapper {
-    background: #db4437;
-    padding: 10px;
-    }
-
-    #ad {
-
-    border: 1px solid black;
+#ad {
+  border: 1px solid black;
   width: 280px;
   height: 230px;
-    color: #4285f4;
-    background: #fff;
+  background: #fff;
 }
-    .product {
-    width: 100px;
-    height: 100px;
-    margin: 10px;
-    padding: 10px;
-    background: #0f9d58;
-    float: left;
-    }
+
+h1, .product {
+  cursor: pointer;
+}
+
+h1 {
+  font-size: 150%;
+  margin: 0;
+  color: #4285f4;
+  text-decoration: underline;
+}
+
+.product {
+  width: 100px;
+  height: 100px;
+  margin: 10px;
+  padding: 10px;
+  background: #0f9d58;
+  float: left;
+}
     </style>
   <script async custom-element="amp-ad-exit" src="https://cdn.ampproject.org/v0/amp-ad-exit-0.1.js"></script>
   <script async src="https://cdn.ampproject.org/v0.js"></script>
@@ -37,45 +42,45 @@
 <script type="application/json">
 {
   "targets": {
-    "e1": {
-      "final_url": "http://localhost:8000/?product1&x=CLICK_X&y=CLICK_Y&e=_elem&shouldNotBeReplaced=AMP_VERSION&a_f=_f",
+    "target1": {
+      "final_url": "http://localhost:8000/?product1&x=CLICK_X&y=CLICK_Y&e=_ELEM&shouldNotBeReplaced=AMP_VERSION",
       "vars": {
-        "_elem": {"defaultValue": "headline"},
-        "_f": {"defaultValue": "foo"}
-      },
-      "filters": ["border_protection"]
+        "_ELEM": {"defaultValue": "headline"}
+      }
     },
-    "e2": {
+    "target2": {
       "final_url": "http://localhost:8000/?product2&r=RANDOM",
       "tracking_urls": [
+        "http://localhost:8000/?tracking-url&clicked=_ELEM"
       ],
-      "filters": ["fast_click", "border_protection"]
+      "vars": {
+        "_ELEM": {"defaultValue": "headline"}
+      },
+      "filters": ["long_delay"]
     }
   },
   "filters": {
-    "fast_click": {
+    "long_delay": {
       "type": "click_delay",
-      "delay": 2000
-    },
-    "border_protection": {
-      "type": "click_location",
-      "top": 10,
-      "right": 10,
-      "bottom": 10,
-      "left": 10
+      "delay": 10000
     }
+  },
+  "transport": {
+    "beacon": true,
+    "image": true
   }
 }
 </script>
 </amp-ad-exit>
-<div id="wrapper" on="tap:exit-api.exit(target='e1')"><div id="ad">
-  <h1>amp-ad-exit example</h1>
-  <div class="product">
-    <a href="https://www.google.com" on="tap:exit-api.exit(target='e1', _elem='Product 1')">product 1</a>
+<div id="ad">
+  <h1 on="tap:exit-api.exit(target='target1')">amp-ad-exit example</h1>
+  <div class="product" on="tap:exit-api.exit(target='target1', _ELEM='Product 1')">
+    <p>product 1</p>
   </div>
-  <div class="product">
-    <a href="https://www.google.com" on="tap:exit-api.exit(target='e2', _elem='Product 2')">product 2</a>
+  <div class="product" on="tap:exit-api.exit(target='target2', _ELEM='Product 2')">
+    <p>product 2</p>
   </div>
-</div></div>
+  <p><a href="https://www.google.com/" on="tap:exit-api.exit(target='target1', _ELEM='anchor')">&lt;A&gt; tags don't work well (try middle-clicking)</a>
+</div>
 </body>
 </html>

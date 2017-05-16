@@ -112,7 +112,7 @@ export class AmpAdExit extends AMP.BaseElement {
    * Checks the click event against the given filters. Returns true if the event
    * passes.
    * @param {!Array<string>} names
-   * @param {!Object<string, !FilterSpec>} specs
+   * @param {!Object<string, !./config.FilterConfig>} specs
    * @param {!Event} event
    * @returns {boolean}
    */
@@ -136,7 +136,7 @@ export class AmpAdExit extends AMP.BaseElement {
     });
   }
 
-  /** @return {?Filter} */
+  /** @return {?./filters/filter.Filter} */
   findFilterForType_(type) {
     switch (type) {
       case FilterType.CLICK_DELAY:

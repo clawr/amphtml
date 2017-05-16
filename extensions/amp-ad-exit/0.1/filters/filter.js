@@ -15,18 +15,17 @@
  */
 
 /** @enum {string} */
-const FilterType = {
+export const FilterType = {
   CLICK_DELAY: 'click_delay',
   CLICK_LOCATION: 'click_location',
 };
 
-class Filter {
+/** @interface */
+export class Filter {
   /**
    * @param {!Object<string, string|number>} spec
    * @param {!Event} event
    * @return {boolean} Whether the exit is allowed.
    */
-  filter(spec, event) { throw new Error('unimplemented'); }
+  filter(spec, event) {}
 }
-
-export {Filter, FilterType};

@@ -16,12 +16,14 @@
 
 import {FilterType} from './filter';
 
-/** @implements {!./filter.Filter} */
+/** @implements {./filter.Filter} */
 export class ClickDelayFilter {
   constructor() {
-    this.resetClock();
+    /** @private {number} */
+    this.inViewportTime_ = Date.now();
   }
 
+  /** @override */
   filter(spec) {
     return (Date.now() - this.inViewportTime_) >= spec.delay;
   }
@@ -31,11 +33,17 @@ export class ClickDelayFilter {
   }
 }
 
-/** @return {ClickDelayFilterSpec} */
+/**
+ * @return {!../config.ClickDelayConfig}
+ */
 export function makeClickDelaySpec(delayMs) {
   return {type: FilterType.CLICK_DELAY, delay: delayMs};
 }
 
+/**
+ * @param {!../config.FilterConfig} spec
+ * @return {boolean} Whether the config defines a ClickDelay filter.
+ */
 export function assertClickDelaySpec(spec) {
   return spec.type == FilterType.CLICK_DELAY && typeof spec.delay == 'number' &&
       spec.delay > 0;

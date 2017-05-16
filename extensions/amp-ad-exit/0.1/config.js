@@ -33,7 +33,7 @@ export let AmpAdExitConfig;
  *   final_url: string,
  *   tracking_urls: (!Array<string>|undefined),
  *   vars: (Variables|undefined),
- *   filters: (!Array<string>|undefined>
+ *   filters: (!Array<string>|undefined)
  * }}
  */
 export let NavigationTarget;
@@ -53,7 +53,7 @@ export let ClickDelayConfig;
 
 /**
  * @typedef {{
- *   type: (./filters/filter.FilterType),
+ *   type: !FilterType,
  *   top: (number|undefined),
  *   right: (number|undefined),
  *   bottom: (number|undefined),
@@ -74,10 +74,11 @@ export const TransportMode = {
 /**
  * Checks whether the object conforms to the AmpAdExitConfig spec.
  *
- * @param {!Object} config The config to validate.
+ * @param {*} config The config to validate.
  * @return {!./config.AmpAdExitConfig}
  */
 export function assertConfig(config) {
+  user().assert(typeof config == 'object');
   if (config.filters) {
     assertFilters(config.filters);
   } else {

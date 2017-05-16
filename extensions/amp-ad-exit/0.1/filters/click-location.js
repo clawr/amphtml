@@ -18,13 +18,18 @@ import {viewportForDoc} from '../../../../src/services';
 import {rectIntersection} from '../../../../src/layout-rect';
 import {FilterType} from './filter';
 
-/** @implements {!./filter.Filter} */
+/** @implements {./filter.Filter} */
 export class ClickLocationFilter {
+  /**
+   * @param {!Window} win
+   * @param {!../../../../src/service/ampdoc-impl.AmpDoc} ampdoc
+   */
   constructor(win, ampdoc) {
     this.win_ = win;
     this.ampdoc_ = ampdoc;
   }
 
+  /** @override */
   filter(spec, event) {
     const clickableArea = this.getClickableArea_();
     const bounds = this.getBounds_(spec, clickableArea);
@@ -35,12 +40,17 @@ export class ClickLocationFilter {
         clientX >= bounds.left;
   }
 
+  /** @private */
   getClickableArea_() {
     const vp = viewportForDoc(this.ampdoc_);
-    const bd = this.win_.document.body;
+    const bd = /** @type {!Element} */ (this.win_.document.body);
     return rectIntersection(vp.getRect(), vp.getLayoutRect(bd));
   }
 
+  /**
+   *
+   * @private
+   */
   getBounds_(spec, clickableArea) {
     return {
       top: clickableArea.top + (spec.top || 0),
@@ -50,7 +60,10 @@ export class ClickLocationFilter {
     };
   }
 
-  /** @return {{clientX: number, clientY: number}} */
+  /**
+   * @return {{clientX: number, clientY: number}}
+   * @private
+  */
   getClickPosition_(event, clickableArea) {
     let clientX, clientY;
     if (event.changedTouches && event.changedTouches.length > 0) {
