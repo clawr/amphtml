@@ -92,7 +92,7 @@ export class AmpAdExit extends AMP.BaseElement {
     }
     const replacements = urlReplacementsForDoc(this.getAmpDoc());
     return url => replacements.expandUrlSync(
-        url, vars, undefined /* opt_collectVars */, whitelist);
+        url, vars, undefined /* opt_cllectVars */, whitelist);
   }
 
   pingTrackingUrl_(url) {
