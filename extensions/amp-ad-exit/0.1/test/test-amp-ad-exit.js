@@ -54,6 +54,19 @@ const EXIT_CONFIG = {
         },
       },
     },
+    variableFrom3pAnalytics: {
+      'finalUrl': 'http://localhost:8000/vars?foo=_foo',
+      vars: {
+        _foo: {
+          defaultValue: 'foo-default',
+          vendorAnalyticsSource: '3p-vendor',
+          vendorAnalyticsResponseKey: 'collected-data',
+        },
+        _bar: {
+          defaultValue: 'bar-default',
+        },
+      },
+    },
   },
   filters: {
     'twoSecond': {
@@ -353,5 +366,26 @@ describes.realWin('amp-ad-exit', {
     expect(sendBeacon)
         .to.have.been.calledWith(
         'http://localhost:8000/tracking?bar=bar', '');
+  });
+
+  it('should replace custom URL variables with 3P Analytics signals', () => {
+    const open = sandbox.stub(win, 'open', () => {
+      return {name: 'fakeWin'};
+    });
+
+    ResponseMap.add(env.ampdoc, '3p-vendor', env.win.document.baseURI, {
+      'unused': 'unused',
+      'collected-data': 'abc123',
+    });
+
+    element.implementation_.executeAction({
+      method: 'exit',
+      args: {target: 'variableFrom3pAnalytics'},
+      event: makeClickEvent(1001, 101, 102),
+      satisfiesTrust: () => true,
+    });
+
+    expect(open).to.have.been.calledWith(
+        'http://localhost:8000/vars?foo=abc123', '_blank');
   });
 });

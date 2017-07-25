@@ -100,8 +100,18 @@ export class AmpAdExit extends AMP.BaseElement {
     if (target.vars) {
       for (const customVar in target.vars) {
         if (customVar[0] == '_') {
-          vars[customVar] = () =>
-              args[customVar] || target.vars[customVar].defaultValue;
+          const vals = target.vars[customVar];
+          vars[customVar] = () => {
+            if (vals.vendorAnalyticsSource) {
+              const map = ResponseMap.get(this.getAmpDoc(),
+                                          vendorAnalyticsSource,
+                                          this.win.document.baseURI);
+              if (map && map[vals.vendorAnalyticsResponseKey]) {
+                return map[vals.vendorAnalyticsResponseKey];
+              }
+            }
+            return args[customVar] || vals.defaultValue;
+          }
           whitelist[customVar] = true;
         }
       }
